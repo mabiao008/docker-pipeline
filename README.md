@@ -5,6 +5,10 @@
 - pipeline master 中心节点，管理和调度任务
 - pipeline agent 执行任务的节点，接收到任务后，调用docker执行pipeline任务
 
+## 架构
+
+![架构](https://gitee.com/jadepeng/pic/raw/master/pic/2021/7/21/1626870685756.png)
+
 ## 任务定义
 
 一个pipeline 任务：
@@ -73,12 +77,12 @@
 
 - [x] 分布式框架，高可用，服务注册与状态维护
 - [x] Agent执行任务
-- [] rolling日志接口
-- [] crontab 定时执行
-- [] 增加快速创建任务，支持python、node等脚本程序直接执行
-- [] 根据内存、CPU 调度
-- [] agent 增加label，调度时可以调度到指定label的agent，比如gpu=true
-- [] 增加任务管理web
+- [ ] rolling日志接口
+- [ ] crontab 定时执行
+- [ ] 快速创建任务，支持python、node等脚本程序直接执行
+- [ ] 根据资源配额（内存、CPU）调度任务, 运行任务需要指定资源配额
+- [ ] agent 增加label标识，调度时可以调度到指定label的agent，比如gpu=true
+- [ ] 增加任务管理web, 管理提交任务、查询运行日志等
 
 ## 进展
 
