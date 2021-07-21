@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/pipeline-agent/agent.iml" filepath="$PROJECT_DIR$/pipeline-agent/agent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pipeline.iml" filepath="$PROJECT_DIR$/pipeline.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pipeline-agent/pipeline (1).iml" filepath="$PROJECT_DIR$/pipeline-agent/pipeline (1).iml" />
+      <module fileurl="file://$PROJECT_DIR$/pipeline-master/pipeline (2).iml" filepath="$PROJECT_DIR$/pipeline-master/pipeline (2).iml" />
+      <module fileurl="file://$PROJECT_DIR$/pipeline (3) (com.github.jadepeng).iml" filepath="$PROJECT_DIR$/pipeline (3) (com.github.jadepeng).iml" />
+      <module fileurl="file://$PROJECT_DIR$/pipeline-core/pipeline-core.iml" filepath="$PROJECT_DIR$/pipeline-core/pipeline-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pipeline-master/pipeline-master.iml" filepath="$PROJECT_DIR$/pipeline-master/pipeline-master.iml" />
+    </modules>
+  </component>
+</project>

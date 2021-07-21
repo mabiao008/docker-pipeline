@@ -1,0 +1,137 @@
+#if(${config.user})user ${config.user};#end
+
+#if(${config.workerProcesses}== 0 )
+worker_processes auto;
+#else
+worker_processes  ${config.workerProcesses};
+#end
+pid        ${config.pidFile};
+
+events {
+    multi_accept off;
+    worker_connections ${config.workerConnections};
+}
+
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+    server_names_hash_bucket_size  128;
+    keepalive_timeout  ${config.keepaliveTimeout};
+    types_hash_max_size 2048;
+    client_max_body_size ${config.clientMaxBodySize}m;
+    client_header_buffer_size 16k;
+    large_client_header_buffers 4 16k;
+
+#if(${config.accessLogOn})
+    log_format  main ${config.accessLogFormat};
+    # for old
+    log_format  main_1 ${config.accessLogFormat};
+    access_log ${config.accessLog} main;
+#end
+#if(${config.errorLogOn})
+    error_log ${config.errorLog};
+#end
+
+    map $http_upgrade $connection_upgrade {
+        default upgrade;
+        ' ' close;
+    }
+
+    # trun off nginx version
+    server_tokens off;
+
+    sendfile        on;
+    # tcp_nopush     on;
+
+#if(${config.gzipOn})
+    gzip  on;
+    gzip_disable "msie6";
+    gzip_min_length 1k;
+    gzip_comp_level 2;
+    gzip_proxied any;
+    gzip_types 	application/json application/x-javascript application/javascript application/xml application/xml+rss text/plain text/css text/xml text/javascript image/svg+xml;
+#end
+
+    #upstreams
+
+#foreach($proxy in $upstreams)
+upstream ${proxy.name} {
+    #if(${proxy.strategy})
+        ${proxy.strategy};
+    #end
+    #foreach($server in ${proxy.servers})
+    server ${server.ip}:${server.port}#if(${server.maxFails}) max_fails=${server.maxFails}#end#if(${server.failTimeout}) fail_timeout=${server.failTimeout}s#end#if(${server.weight}) weight=${server.weight}#end#if(${server.maxConns}) max_conns=${server.maxConns}#end#if(${server.backup}) backup#end;
+    #end
+    }
+#end
+    #default server
+
+    #vhosts
+#foreach($vhost in $hosts)
+    server {
+        listen ${vhost.port}#if($vhost.defaultVhost) default#end#if(${vhost.sslCertificate} && ${vhost.sslCertificate.commonName}!="") ssl http2#end;
+        #if(!$vhost.defaultVhost) #if($vhost.aliases)server_name ${vhost.aliases};#end #end
+
+        #if(${vhost.root} && ${vhost.root} !="")
+    root ${vhost.root};
+    #end
+    client_max_body_size 10240M;
+    proxy_max_temp_file_size 0;
+    #if(${vhost.sslCertificate} && ${vhost.sslCertificate.commonName}!="")
+
+    ssl_certificate ${vhost.sslCertificate.commonName};
+    ssl_certificate_key ${vhost.sslCertificateKey.commonName};
+    ssl_session_cache shared:SSL:5m;
+    ssl_session_timeout 24h;
+    ssl_session_tickets off;
+    ssl_protocols TLSv1.1 TLSv1.2;
+    ssl_ciphers 'EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH';
+    ssl_prefer_server_ciphers on;
+    ssl_stapling on;
+    ssl_stapling_verify on;
+    ssl_trusted_certificate ${vhost.sslCertificate.commonName};
+    ssl_buffer_size 4k;
+
+    #end
+
+    #if(${vhost.access_log} && ${vhost.access_log}!="" )access_log ${vhost.access_log};
+    #end
+    #if(${vhost.index} && ${vhost.index} !="")index ${vhost.index};#end
+    #foreach($location in $vhost.locations)
+
+    location ${location.path} {
+        #if(${location.type} == "PROXY")
+
+        proxy_pass http#if($vhost.defaultVhost && ${vhost.sslCertificate} && ${vhost.sslCertificate.commonName}!="")s#end://${location.passAddress};
+    #if(!$location.advanced || !$location.advanced.contains("proxy_set_header"))
+        proxy_set_header HOST $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    #end
+        #end
+        #if(${location.type} == "UWSGI")
+
+        include uwsgi_params;
+        uwsgi_pass ${location.passAddress};
+        uwsgi_connect_timeout 3;
+        uwsgi_send_timeout 7;
+        uwsgi_read_timeout 10;
+        #end
+        #if(${location.type} == "FASTCGI")
+
+        include        fastcgi_params;
+        fastcgi_pass ${location.passAddress};
+        #end
+
+        #if(${location.rewrites})#foreach($rewrite in $location.rewrites)rewrite ${rewrite};
+        #end#end
+        #if(${location.advanced})${location.advanced}
+        #end
+
+    }
+    #end
+}
+#end
+    include vhosts/*.conf;
+}
