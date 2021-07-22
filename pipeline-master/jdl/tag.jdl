@@ -1,0 +1,23 @@
+/**
+ * 标签
+ */
+entity Tag {
+    /** 名称 */
+    name String,
+     /** 创建时间 */
+    createdDate Instant,
+    /**     创建者 */
+    createdBy String
+}
+
+// 筛选实体(mongodb不支持）
+filter *
+
+// 生成DTO
+dto * with mapstruct
+
+// 生成带接口和实现的service
+service all with serviceImpl
+
+// 支持分页
+paginate all with pagination

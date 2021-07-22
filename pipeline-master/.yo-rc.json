@@ -42,6 +42,8 @@
     "clientTheme": "none",
     "clientThemeVariant": "",
     "withAdminUi": true,
-    "languages": ["zh-cn", "en"]
+    "languages": ["zh-cn", "en"],
+    "entities": ["Tag"],
+    "lastLiquibaseTimestamp": 1626935885000
   }
 }
