@@ -1,0 +1,59 @@
+{
+  "name": "ProgramArguments",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "javadoc": "名称"
+    },
+    {
+      "fieldName": "tooltip",
+      "fieldType": "String",
+      "javadoc": "提示信息"
+    },
+    {
+      "fieldName": "formType",
+      "fieldType": "String",
+      "javadoc": "表单类型"
+    },
+    {
+      "fieldName": "defaultValue",
+      "fieldType": "String",
+      "javadoc": "默认值"
+    },
+    {
+      "fieldName": "placeholder",
+      "fieldType": "String",
+      "javadoc": "placeholder"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "Instant",
+      "javadoc": "创建时间"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String",
+      "javadoc": "创建者"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "many-to-one",
+      "otherEntityName": "programVersion",
+      "otherEntityRelationshipName": "arguments",
+      "relationshipName": "program"
+    }
+  ],
+  "javadoc": "应用程序运行参数",
+  "entityTableName": "program_arguments",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210726112652"
+}

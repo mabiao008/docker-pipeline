@@ -3,16 +3,18 @@ package com.github.jadepeng.pipeline.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * 标签
+ * 应用程序
  */
-@Document(collection = "tag")
-public class Tag implements Serializable {
+@Document(collection = "program")
+public class Program implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -38,14 +40,16 @@ public class Tag implements Serializable {
     private String createdBy;
 
     @DBRef
-    @Field("app")
-    @JsonIgnoreProperties(value = { "tags" }, allowSetters = true)
-    private App app;
+    @Field("onlineVersion")
+    private ProgramVersion onlineVersion;
 
+    /**
+     * 标签
+     */
     @DBRef
-    @Field("program")
-    @JsonIgnoreProperties(value = { "onlineVersion", "tags" }, allowSetters = true)
-    private Program program;
+    @Field("tags")
+    @JsonIgnoreProperties(value = { "app", "program" }, allowSetters = true)
+    private Set<Tag> tags = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public String getId() {
@@ -56,7 +60,7 @@ public class Tag implements Serializable {
         this.id = id;
     }
 
-    public Tag id(String id) {
+    public Program id(String id) {
         this.id = id;
         return this;
     }
@@ -65,7 +69,7 @@ public class Tag implements Serializable {
         return this.name;
     }
 
-    public Tag name(String name) {
+    public Program name(String name) {
         this.name = name;
         return this;
     }
@@ -78,7 +82,7 @@ public class Tag implements Serializable {
         return this.createdDate;
     }
 
-    public Tag createdDate(Instant createdDate) {
+    public Program createdDate(Instant createdDate) {
         this.createdDate = createdDate;
         return this;
     }
@@ -91,7 +95,7 @@ public class Tag implements Serializable {
         return this.createdBy;
     }
 
-    public Tag createdBy(String createdBy) {
+    public Program createdBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
@@ -100,30 +104,48 @@ public class Tag implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public App getApp() {
-        return this.app;
+    public ProgramVersion getOnlineVersion() {
+        return this.onlineVersion;
     }
 
-    public Tag app(App app) {
-        this.setApp(app);
+    public Program onlineVersion(ProgramVersion programVersion) {
+        this.setOnlineVersion(programVersion);
         return this;
     }
 
-    public void setApp(App app) {
-        this.app = app;
+    public void setOnlineVersion(ProgramVersion programVersion) {
+        this.onlineVersion = programVersion;
     }
 
-    public Program getProgram() {
-        return this.program;
+    public Set<Tag> getTags() {
+        return this.tags;
     }
 
-    public Tag program(Program program) {
-        this.setProgram(program);
+    public Program tags(Set<Tag> tags) {
+        this.setTags(tags);
         return this;
     }
 
-    public void setProgram(Program program) {
-        this.program = program;
+    public Program addTags(Tag tag) {
+        this.tags.add(tag);
+        tag.setProgram(this);
+        return this;
+    }
+
+    public Program removeTags(Tag tag) {
+        this.tags.remove(tag);
+        tag.setProgram(null);
+        return this;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        if (this.tags != null) {
+            this.tags.forEach(i -> i.setProgram(null));
+        }
+        if (tags != null) {
+            tags.forEach(i -> i.setProgram(this));
+        }
+        this.tags = tags;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -133,10 +155,10 @@ public class Tag implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Tag)) {
+        if (!(o instanceof Program)) {
             return false;
         }
-        return id != null && id.equals(((Tag) o).id);
+        return id != null && id.equals(((Program) o).id);
     }
 
     @Override
@@ -148,7 +170,7 @@ public class Tag implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Tag{" +
+        return "Program{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +

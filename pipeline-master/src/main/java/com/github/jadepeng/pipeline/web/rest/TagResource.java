@@ -1,6 +1,5 @@
 package com.github.jadepeng.pipeline.web.rest;
 
-import com.github.jadepeng.pipeline.core.dto.BaseRequest;
 import com.github.jadepeng.pipeline.repository.TagRepository;
 import com.github.jadepeng.pipeline.service.TagService;
 import com.github.jadepeng.pipeline.service.dto.TagDTO;
@@ -135,13 +134,13 @@ public class TagResource {
     /**
      * {@code GET  /tags} : get all the tags.
      *
-     * @param request the pagination information.
+     * @param pageable the pagination information.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of tags in body.
      */
     @GetMapping("/tags")
-    public ResponseEntity<List<TagDTO>> getAllTags(BaseRequest request) {
+    public ResponseEntity<List<TagDTO>> getAllTags(Pageable pageable) {
         log.debug("REST request to get a page of Tags");
-        Page<TagDTO> page = tagService.findAll(request);
+        Page<TagDTO> page = tagService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }

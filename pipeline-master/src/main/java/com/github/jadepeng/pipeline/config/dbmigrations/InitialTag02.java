@@ -6,6 +6,7 @@ import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
 import com.github.jadepeng.pipeline.config.Constants;
+import com.github.jadepeng.pipeline.domain.App;
 import com.github.jadepeng.pipeline.domain.Authority;
 import com.github.jadepeng.pipeline.domain.Tag;
 import com.github.jadepeng.pipeline.domain.User;
@@ -30,6 +31,18 @@ public class InitialTag02 {
 
         tag.setName("机器学习");
         tag.setId("ml");
+        mongoTemplate.save(tag);
+    }
+
+    @ChangeSet(order = "01", author = "initiator", id = "01-addApp")
+    public void addApp(MongockTemplate mongoTemplate) {
+        App tag = new App();
+        tag.setName("aimind");
+        tag.setId("aimind");
+        mongoTemplate.save(tag);
+
+        tag.setName("ainote");
+        tag.setId("ainote");
         mongoTemplate.save(tag);
     }
 

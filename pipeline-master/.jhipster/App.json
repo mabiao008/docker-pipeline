@@ -1,5 +1,5 @@
 {
-  "name": "Tag",
+  "name": "App",
   "fields": [
     {
       "fieldName": "name",
@@ -17,9 +17,17 @@
       "javadoc": "创建者"
     }
   ],
-  "relationships": [],
-  "javadoc": "标签",
-  "entityTableName": "tag",
+  "relationships": [
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "tag",
+      "otherEntityRelationshipName": "app",
+      "javadoc": "标签",
+      "relationshipName": "tags"
+    }
+  ],
+  "javadoc": "应用",
+  "entityTableName": "app",
   "dto": "mapstruct",
   "pagination": "pagination",
   "service": "serviceImpl",
@@ -28,5 +36,5 @@
   "readOnly": false,
   "embedded": false,
   "applications": "*",
-  "changelogDate": "20210722063805"
+  "changelogDate": "20210726112649"
 }

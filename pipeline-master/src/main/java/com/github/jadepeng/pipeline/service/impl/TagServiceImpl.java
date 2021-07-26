@@ -1,16 +1,11 @@
 package com.github.jadepeng.pipeline.service.impl;
 
-import com.github.jadepeng.pipeline.core.dto.BaseRequest;
 import com.github.jadepeng.pipeline.domain.Tag;
 import com.github.jadepeng.pipeline.repository.TagRepository;
 import com.github.jadepeng.pipeline.service.TagService;
 import com.github.jadepeng.pipeline.service.dto.TagDTO;
 import com.github.jadepeng.pipeline.service.mapper.TagMapper;
-
-import java.util.List;
 import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -60,14 +55,9 @@ public class TagServiceImpl implements TagService {
     }
 
     @Override
-    public Page<TagDTO> findAll(BaseRequest request) {
+    public Page<TagDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Tags");
-        if (StringUtils.isNotBlank(request.getName())) {
-            return tagRepository.findAllByNameLike(request.getName(), request)
-                                .map(tagMapper::toDto);
-        }
-        return tagRepository.findAll(request)
-                            .map(tagMapper::toDto);
+        return tagRepository.findAll(pageable).map(tagMapper::toDto);
     }
 
     @Override

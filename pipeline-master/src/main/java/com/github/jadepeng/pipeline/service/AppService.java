@@ -1,48 +1,48 @@
 package com.github.jadepeng.pipeline.service;
 
-import com.github.jadepeng.pipeline.service.dto.TagDTO;
+import com.github.jadepeng.pipeline.service.dto.AppDTO;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 /**
- * Service Interface for managing {@link com.github.jadepeng.pipeline.domain.Tag}.
+ * Service Interface for managing {@link com.github.jadepeng.pipeline.domain.App}.
  */
-public interface TagService {
+public interface AppService {
     /**
-     * Save a tag.
+     * Save a app.
      *
-     * @param tagDTO the entity to save.
+     * @param appDTO the entity to save.
      * @return the persisted entity.
      */
-    TagDTO save(TagDTO tagDTO);
+    AppDTO save(AppDTO appDTO);
 
     /**
-     * Partially updates a tag.
+     * Partially updates a app.
      *
-     * @param tagDTO the entity to update partially.
+     * @param appDTO the entity to update partially.
      * @return the persisted entity.
      */
-    Optional<TagDTO> partialUpdate(TagDTO tagDTO);
+    Optional<AppDTO> partialUpdate(AppDTO appDTO);
 
     /**
-     * Get all the tags.
+     * Get all the apps.
      *
      * @param pageable the pagination information.
      * @return the list of entities.
      */
-    Page<TagDTO> findAll(Pageable pageable);
+    Page<AppDTO> findAll(Pageable pageable);
 
     /**
-     * Get the "id" tag.
+     * Get the "id" app.
      *
      * @param id the id of the entity.
      * @return the entity.
      */
-    Optional<TagDTO> findOne(String id);
+    Optional<AppDTO> findOne(String id);
 
     /**
-     * Delete the "id" tag.
+     * Delete the "id" app.
      *
      * @param id the id of the entity.
      */

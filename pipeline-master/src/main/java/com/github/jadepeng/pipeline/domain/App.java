@@ -3,16 +3,18 @@ package com.github.jadepeng.pipeline.domain;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.HashSet;
+import java.util.Set;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * 标签
+ * 应用
  */
-@Document(collection = "tag")
-public class Tag implements Serializable {
+@Document(collection = "app")
+public class App implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -37,15 +39,13 @@ public class Tag implements Serializable {
     @Field("created_by")
     private String createdBy;
 
+    /**
+     * 标签
+     */
     @DBRef
-    @Field("app")
-    @JsonIgnoreProperties(value = { "tags" }, allowSetters = true)
-    private App app;
-
-    @DBRef
-    @Field("program")
-    @JsonIgnoreProperties(value = { "onlineVersion", "tags" }, allowSetters = true)
-    private Program program;
+    @Field("tags")
+    @JsonIgnoreProperties(value = { "app", "program" }, allowSetters = true)
+    private Set<Tag> tags = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public String getId() {
@@ -56,7 +56,7 @@ public class Tag implements Serializable {
         this.id = id;
     }
 
-    public Tag id(String id) {
+    public App id(String id) {
         this.id = id;
         return this;
     }
@@ -65,7 +65,7 @@ public class Tag implements Serializable {
         return this.name;
     }
 
-    public Tag name(String name) {
+    public App name(String name) {
         this.name = name;
         return this;
     }
@@ -78,7 +78,7 @@ public class Tag implements Serializable {
         return this.createdDate;
     }
 
-    public Tag createdDate(Instant createdDate) {
+    public App createdDate(Instant createdDate) {
         this.createdDate = createdDate;
         return this;
     }
@@ -91,7 +91,7 @@ public class Tag implements Serializable {
         return this.createdBy;
     }
 
-    public Tag createdBy(String createdBy) {
+    public App createdBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
@@ -100,30 +100,35 @@ public class Tag implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public App getApp() {
-        return this.app;
+    public Set<Tag> getTags() {
+        return this.tags;
     }
 
-    public Tag app(App app) {
-        this.setApp(app);
+    public App tags(Set<Tag> tags) {
+        this.setTags(tags);
         return this;
     }
 
-    public void setApp(App app) {
-        this.app = app;
-    }
-
-    public Program getProgram() {
-        return this.program;
-    }
-
-    public Tag program(Program program) {
-        this.setProgram(program);
+    public App addTags(Tag tag) {
+        this.tags.add(tag);
+        tag.setApp(this);
         return this;
     }
 
-    public void setProgram(Program program) {
-        this.program = program;
+    public App removeTags(Tag tag) {
+        this.tags.remove(tag);
+        tag.setApp(null);
+        return this;
+    }
+
+    public void setTags(Set<Tag> tags) {
+        if (this.tags != null) {
+            this.tags.forEach(i -> i.setApp(null));
+        }
+        if (tags != null) {
+            tags.forEach(i -> i.setApp(this));
+        }
+        this.tags = tags;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -133,10 +138,10 @@ public class Tag implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Tag)) {
+        if (!(o instanceof App)) {
             return false;
         }
-        return id != null && id.equals(((Tag) o).id);
+        return id != null && id.equals(((App) o).id);
     }
 
     @Override
@@ -148,7 +153,7 @@ public class Tag implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Tag{" +
+        return "App{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +

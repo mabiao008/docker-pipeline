@@ -1,18 +1,16 @@
 package com.github.jadepeng.pipeline.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**
- * 标签
+ * Docker镜像
  */
-@Document(collection = "tag")
-public class Tag implements Serializable {
+@Document(collection = "docker_image")
+public class DockerImage implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -26,6 +24,18 @@ public class Tag implements Serializable {
     private String name;
 
     /**
+     * url
+     */
+    @Field("url")
+    private String url;
+
+    /**
+     * url
+     */
+    @Field("version")
+    private String version;
+
+    /**
      * 创建时间
      */
     @Field("created_date")
@@ -37,16 +47,6 @@ public class Tag implements Serializable {
     @Field("created_by")
     private String createdBy;
 
-    @DBRef
-    @Field("app")
-    @JsonIgnoreProperties(value = { "tags" }, allowSetters = true)
-    private App app;
-
-    @DBRef
-    @Field("program")
-    @JsonIgnoreProperties(value = { "onlineVersion", "tags" }, allowSetters = true)
-    private Program program;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public String getId() {
         return id;
@@ -56,7 +56,7 @@ public class Tag implements Serializable {
         this.id = id;
     }
 
-    public Tag id(String id) {
+    public DockerImage id(String id) {
         this.id = id;
         return this;
     }
@@ -65,7 +65,7 @@ public class Tag implements Serializable {
         return this.name;
     }
 
-    public Tag name(String name) {
+    public DockerImage name(String name) {
         this.name = name;
         return this;
     }
@@ -74,11 +74,37 @@ public class Tag implements Serializable {
         this.name = name;
     }
 
+    public String getUrl() {
+        return this.url;
+    }
+
+    public DockerImage url(String url) {
+        this.url = url;
+        return this;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getVersion() {
+        return this.version;
+    }
+
+    public DockerImage version(String version) {
+        this.version = version;
+        return this;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
+    }
+
     public Instant getCreatedDate() {
         return this.createdDate;
     }
 
-    public Tag createdDate(Instant createdDate) {
+    public DockerImage createdDate(Instant createdDate) {
         this.createdDate = createdDate;
         return this;
     }
@@ -91,39 +117,13 @@ public class Tag implements Serializable {
         return this.createdBy;
     }
 
-    public Tag createdBy(String createdBy) {
+    public DockerImage createdBy(String createdBy) {
         this.createdBy = createdBy;
         return this;
     }
 
     public void setCreatedBy(String createdBy) {
         this.createdBy = createdBy;
-    }
-
-    public App getApp() {
-        return this.app;
-    }
-
-    public Tag app(App app) {
-        this.setApp(app);
-        return this;
-    }
-
-    public void setApp(App app) {
-        this.app = app;
-    }
-
-    public Program getProgram() {
-        return this.program;
-    }
-
-    public Tag program(Program program) {
-        this.setProgram(program);
-        return this;
-    }
-
-    public void setProgram(Program program) {
-        this.program = program;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -133,10 +133,10 @@ public class Tag implements Serializable {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Tag)) {
+        if (!(o instanceof DockerImage)) {
             return false;
         }
-        return id != null && id.equals(((Tag) o).id);
+        return id != null && id.equals(((DockerImage) o).id);
     }
 
     @Override
@@ -148,9 +148,11 @@ public class Tag implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "Tag{" +
+        return "DockerImage{" +
             "id=" + getId() +
             ", name='" + getName() + "'" +
+            ", url='" + getUrl() + "'" +
+            ", version='" + getVersion() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             "}";

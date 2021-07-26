@@ -7,10 +7,10 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * A DTO for the {@link com.github.jadepeng.pipeline.domain.Tag} entity.
+ * A DTO for the {@link com.github.jadepeng.pipeline.domain.DockerImage} entity.
  */
-@ApiModel(description = "标签")
-public class TagDTO implements Serializable {
+@ApiModel(description = "Docker镜像")
+public class DockerImageDTO implements Serializable {
 
     private String id;
 
@@ -19,6 +19,18 @@ public class TagDTO implements Serializable {
      */
     @ApiModelProperty(value = "名称")
     private String name;
+
+    /**
+     * url
+     */
+    @ApiModelProperty(value = "url")
+    private String url;
+
+    /**
+     * url
+     */
+    @ApiModelProperty(value = "url")
+    private String version;
 
     /**
      * 创建时间
@@ -31,10 +43,6 @@ public class TagDTO implements Serializable {
      */
     @ApiModelProperty(value = "创建者")
     private String createdBy;
-
-    private AppDTO app;
-
-    private ProgramDTO program;
 
     public String getId() {
         return id;
@@ -50,6 +58,22 @@ public class TagDTO implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public void setVersion(String version) {
+        this.version = version;
     }
 
     public Instant getCreatedDate() {
@@ -68,36 +92,20 @@ public class TagDTO implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public AppDTO getApp() {
-        return app;
-    }
-
-    public void setApp(AppDTO app) {
-        this.app = app;
-    }
-
-    public ProgramDTO getProgram() {
-        return program;
-    }
-
-    public void setProgram(ProgramDTO program) {
-        this.program = program;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TagDTO)) {
+        if (!(o instanceof DockerImageDTO)) {
             return false;
         }
 
-        TagDTO tagDTO = (TagDTO) o;
+        DockerImageDTO dockerImageDTO = (DockerImageDTO) o;
         if (this.id == null) {
             return false;
         }
-        return Objects.equals(this.id, tagDTO.id);
+        return Objects.equals(this.id, dockerImageDTO.id);
     }
 
     @Override
@@ -108,13 +116,13 @@ public class TagDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "TagDTO{" +
+        return "DockerImageDTO{" +
             "id='" + getId() + "'" +
             ", name='" + getName() + "'" +
+            ", url='" + getUrl() + "'" +
+            ", version='" + getVersion() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
-            ", app=" + getApp() +
-            ", program=" + getProgram() +
             "}";
     }
 }

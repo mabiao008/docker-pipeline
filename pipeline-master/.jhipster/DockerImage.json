@@ -1,0 +1,42 @@
+{
+  "name": "DockerImage",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "javadoc": "名称"
+    },
+    {
+      "fieldName": "url",
+      "fieldType": "String",
+      "javadoc": "url"
+    },
+    {
+      "fieldName": "version",
+      "fieldType": "String",
+      "javadoc": "url"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "Instant",
+      "javadoc": "创建时间"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String",
+      "javadoc": "创建者"
+    }
+  ],
+  "relationships": [],
+  "javadoc": "Docker镜像",
+  "entityTableName": "docker_image",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210726112650"
+}

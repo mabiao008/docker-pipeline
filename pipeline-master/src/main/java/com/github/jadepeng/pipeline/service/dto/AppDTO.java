@@ -7,10 +7,10 @@ import java.time.Instant;
 import java.util.Objects;
 
 /**
- * A DTO for the {@link com.github.jadepeng.pipeline.domain.Tag} entity.
+ * A DTO for the {@link com.github.jadepeng.pipeline.domain.App} entity.
  */
-@ApiModel(description = "标签")
-public class TagDTO implements Serializable {
+@ApiModel(description = "应用")
+public class AppDTO implements Serializable {
 
     private String id;
 
@@ -31,10 +31,6 @@ public class TagDTO implements Serializable {
      */
     @ApiModelProperty(value = "创建者")
     private String createdBy;
-
-    private AppDTO app;
-
-    private ProgramDTO program;
 
     public String getId() {
         return id;
@@ -68,36 +64,20 @@ public class TagDTO implements Serializable {
         this.createdBy = createdBy;
     }
 
-    public AppDTO getApp() {
-        return app;
-    }
-
-    public void setApp(AppDTO app) {
-        this.app = app;
-    }
-
-    public ProgramDTO getProgram() {
-        return program;
-    }
-
-    public void setProgram(ProgramDTO program) {
-        this.program = program;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof TagDTO)) {
+        if (!(o instanceof AppDTO)) {
             return false;
         }
 
-        TagDTO tagDTO = (TagDTO) o;
+        AppDTO appDTO = (AppDTO) o;
         if (this.id == null) {
             return false;
         }
-        return Objects.equals(this.id, tagDTO.id);
+        return Objects.equals(this.id, appDTO.id);
     }
 
     @Override
@@ -108,13 +88,11 @@ public class TagDTO implements Serializable {
     // prettier-ignore
     @Override
     public String toString() {
-        return "TagDTO{" +
+        return "AppDTO{" +
             "id='" + getId() + "'" +
             ", name='" + getName() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
-            ", app=" + getApp() +
-            ", program=" + getProgram() +
             "}";
     }
 }

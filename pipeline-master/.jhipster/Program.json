@@ -1,0 +1,47 @@
+{
+  "name": "Program",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "javadoc": "名称"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "Instant",
+      "javadoc": "创建时间"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String",
+      "javadoc": "创建者"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-one",
+      "otherEntityName": "programVersion",
+      "otherEntityRelationshipName": "program",
+      "relationshipName": "onlineVersion",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "tag",
+      "otherEntityRelationshipName": "program",
+      "javadoc": "标签",
+      "relationshipName": "tags"
+    }
+  ],
+  "javadoc": "应用程序",
+  "entityTableName": "program",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210726112651"
+}

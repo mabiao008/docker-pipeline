@@ -43,7 +43,7 @@
     "clientThemeVariant": "",
     "withAdminUi": true,
     "languages": ["zh-cn", "en"],
-    "entities": ["Tag"],
-    "lastLiquibaseTimestamp": 1626935885000
+    "entities": ["App", "DockerImage", "Program", "ProgramArguments", "ProgramVersion", "Tag"],
+    "lastLiquibaseTimestamp": 1627302831000
   }
 }

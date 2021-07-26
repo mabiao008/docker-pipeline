@@ -1,0 +1,118 @@
+/**
+ * 应用
+ */
+entity App {
+    /** 名称 */
+    name String,
+     /** 创建时间 */
+    createdDate Instant,
+    /**     创建者 */
+    createdBy String
+}
+
+/**
+ * 标签
+ */
+entity Tag {
+    /** 名称 */
+    name String,
+     /** 创建时间 */
+    createdDate Instant,
+    /**     创建者 */
+    createdBy String
+}
+
+/**
+ * Docker镜像
+ */
+entity DockerImage {
+    /** 名称 */
+    name String,
+    /** url */
+    url String,
+    /** url */
+    version String,
+     /** 创建时间 */
+    createdDate Instant,
+    /**     创建者 */
+    createdBy String
+}
+
+/**
+ * 应用程序
+ */
+entity Program {
+    /** 名称 */
+    name String,
+    /** 创建时间 */
+    createdDate Instant,
+    /**     创建者 */
+    createdBy String
+}
+
+/**
+ * 应用程序版本
+ */
+entity ProgramVersion {
+    /** 名称 */
+    name String,
+    /** description */
+    description String,
+    /** 内容 */
+    Content String,
+    /** 文件路径 */
+    path String,
+    /** 启动命令 */
+    command String,
+    /** 版本 */
+    version String,
+    /** 创建时间 */
+    createdDate Instant,
+    /**     创建者 */
+    createdBy String
+}
+
+/**
+ * 应用程序运行参数
+ */
+entity ProgramArguments {
+    /** 名称 */
+    name String,
+    /** 提示信息 */
+    tooltip String,
+    /** 表单类型 */
+    formType String,
+    /** 默认值 */
+    defaultValue String,
+    /** placeholder */
+    placeholder String,
+    /** 创建时间 */
+    createdDate Instant,
+    /**     创建者 */
+    createdBy String
+}
+
+relationship OneToMany {
+  ProgramVersion{arguments} to ProgramArguments{program}
+  /** 标签 */
+  App{tags} to Tag
+  /** 标签 */
+  Program{tags} to Tag
+}
+
+relationship OneToOne {
+  ProgramVersion{dockerImage} to DockerImage
+  Program{onlineVersion} to ProgramVersion
+}
+
+// 筛选实体(mongodb不支持）
+filter *
+
+// 生成DTO
+dto * with mapstruct
+
+// 生成带接口和实现的service
+service all with serviceImpl
+
+// 支持分页
+paginate all with pagination

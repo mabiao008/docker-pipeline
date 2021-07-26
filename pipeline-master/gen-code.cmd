@@ -1,1 +1,1 @@
-jhipster jdl model.jh --force
+jhipster jdl app.jdl --force

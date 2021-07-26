@@ -1,0 +1,71 @@
+{
+  "name": "ProgramVersion",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String",
+      "javadoc": "名称"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "javadoc": "description"
+    },
+    {
+      "fieldName": "content",
+      "fieldType": "String",
+      "javadoc": "内容"
+    },
+    {
+      "fieldName": "path",
+      "fieldType": "String",
+      "javadoc": "文件路径"
+    },
+    {
+      "fieldName": "command",
+      "fieldType": "String",
+      "javadoc": "启动命令"
+    },
+    {
+      "fieldName": "version",
+      "fieldType": "String",
+      "javadoc": "版本"
+    },
+    {
+      "fieldName": "createdDate",
+      "fieldType": "Instant",
+      "javadoc": "创建时间"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String",
+      "javadoc": "创建者"
+    }
+  ],
+  "relationships": [
+    {
+      "relationshipType": "one-to-one",
+      "otherEntityName": "dockerImage",
+      "otherEntityRelationshipName": "programVersion",
+      "relationshipName": "dockerImage",
+      "ownerSide": true
+    },
+    {
+      "relationshipType": "one-to-many",
+      "otherEntityName": "programArguments",
+      "otherEntityRelationshipName": "program",
+      "relationshipName": "arguments"
+    }
+  ],
+  "javadoc": "应用程序版本",
+  "entityTableName": "program_version",
+  "dto": "mapstruct",
+  "pagination": "pagination",
+  "service": "serviceImpl",
+  "jpaMetamodelFiltering": false,
+  "fluentMethods": true,
+  "readOnly": false,
+  "embedded": false,
+  "applications": "*",
+  "changelogDate": "20210726120205"
+}
