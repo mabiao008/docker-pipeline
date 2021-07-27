@@ -78,6 +78,11 @@ public class ProgramVersion implements Serializable {
     @JsonIgnoreProperties(value = { "program" }, allowSetters = true)
     private Set<ProgramArguments> arguments = new HashSet<>();
 
+    @DBRef
+    @Field("program")
+    @JsonIgnoreProperties(value = { "tags" }, allowSetters = true)
+    private Program program;
+
     // jhipster-needle-entity-add-field - JHipster will add fields here
     public String getId() {
         return id;
@@ -238,6 +243,14 @@ public class ProgramVersion implements Serializable {
             programArguments.forEach(i -> i.setProgram(this));
         }
         this.arguments = programArguments;
+    }
+
+    public Program getProgram() {
+        return program;
+    }
+
+    public void setProgram(Program program) {
+        this.program = program;
     }
 
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here

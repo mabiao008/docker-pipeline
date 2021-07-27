@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "target": "es2015",
+    "baseUrl": "./src",
+    "paths": {
+      "@api/*": ["api/*"],
+      "@common/*": ["common/*"],
+      "@components/*": ["components/*"],
+      "@doc/*": ["../doc/*"],
+      "@domain/*": ["domain/*"],
+      "@router/*": ["router/*"],
+      "@model/*": ["domain/model/*"],
+      "@service/*": ["domain/service/*"],
+      "@store/*": ["store/*"],
+      "@utils/*": ["utils/*"],
+      "@views/*": ["views/*"],
+    },
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": ["node_modules", "dist"]
+}

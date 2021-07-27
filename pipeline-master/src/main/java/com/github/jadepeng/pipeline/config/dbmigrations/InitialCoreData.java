@@ -1,22 +1,15 @@
 package com.github.jadepeng.pipeline.config.dbmigrations;
 
-import java.time.Instant;
-
 import com.github.cloudyrock.mongock.ChangeLog;
 import com.github.cloudyrock.mongock.ChangeSet;
 import com.github.cloudyrock.mongock.driver.mongodb.springdata.v3.decorator.impl.MongockTemplate;
-import com.github.jadepeng.pipeline.config.Constants;
-import com.github.jadepeng.pipeline.domain.App;
-import com.github.jadepeng.pipeline.domain.Authority;
-import com.github.jadepeng.pipeline.domain.Tag;
-import com.github.jadepeng.pipeline.domain.User;
-import com.github.jadepeng.pipeline.security.AuthoritiesConstants;
+import com.github.jadepeng.pipeline.domain.*;
 
 /**
  * Creates the initial database setup.
  */
 @ChangeLog(order = "001")
-public class InitialTag02 {
+public class InitialCoreData {
 
     @ChangeSet(order = "01", author = "initiator", id = "01-addTags")
     public void addTags(MongockTemplate mongoTemplate) {
@@ -44,6 +37,20 @@ public class InitialTag02 {
         tag.setName("ainote");
         tag.setId("ainote");
         mongoTemplate.save(tag);
+    }
+
+    @ChangeSet(order = "01", author = "initiator", id = "01-addDockerImage")
+    public void addDockerImage(MongockTemplate mongoTemplate) {
+        DockerImage dockerImage = new DockerImage();
+        dockerImage.setName("python");
+        dockerImage.setUrl("python:1.0");
+        dockerImage.setId("python");
+        mongoTemplate.save(dockerImage);
+
+        dockerImage.setName("java 1.8");
+        dockerImage.setUrl("java:1.8");
+        dockerImage.setId("java8");
+        mongoTemplate.save(dockerImage);
     }
 
 }

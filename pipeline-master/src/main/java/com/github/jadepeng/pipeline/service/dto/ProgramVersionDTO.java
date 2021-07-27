@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.List;
 
 /**
  * A DTO for the {@link com.github.jadepeng.pipeline.domain.ProgramVersion} entity.
@@ -63,6 +64,8 @@ public class ProgramVersionDTO implements Serializable {
     private String createdBy;
 
     private DockerImageDTO dockerImage;
+
+    private List<TagDTO> tags;
 
     public String getId() {
         return id;
@@ -142,6 +145,15 @@ public class ProgramVersionDTO implements Serializable {
 
     public void setDockerImage(DockerImageDTO dockerImage) {
         this.dockerImage = dockerImage;
+    }
+
+    public List<TagDTO> getTags() {
+        return tags;
+    }
+
+    public void setTags(
+        List<TagDTO> tags) {
+        this.tags = tags;
     }
 
     @Override
