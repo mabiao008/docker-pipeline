@@ -59,11 +59,11 @@ public class JobRunner {
         if (jobContexts.containsKey(jobId)) {
             File logFile = jobContexts.get(jobId).getLogFile();
             Pipeline job = jobContexts.get(jobId).getPipeline();
-            return PipelineJobLog.fromLogs(job,
-                                           FileUtils.readLines(logFile,"utf-8"),
+            return PipelineJobLog.fromLogs(FileUtils.readLines(logFile,"utf-8"),
                                            job.getPipelineTasks());
         }
-        return null;
+        throw new IllegalStateException(jobId + " is not running on this " +
+                                        "agent");
     }
 
     @SneakyThrows

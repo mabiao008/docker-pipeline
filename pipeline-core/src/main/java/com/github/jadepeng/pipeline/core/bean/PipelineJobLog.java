@@ -22,10 +22,8 @@ public class PipelineJobLog {
     private Long pipelineJobSt;
     private Long pipelineJobFt;
 
-    public static PipelineJobLog fromLogs(
-        Pipeline job,
-        List<String> rawLogs,
-        List<Pipeline.PipelineTask> sortedTask) {
+    public static PipelineJobLog fromLogs(List<String> rawLogs,
+                                          List<Pipeline.PipelineTask> sortedTask) {
         PipelineJobLog jobLog = new PipelineJobLog();
         jobLog.setLogs(new ArrayList<>());
         if (sortedTask != null && sortedTask.size() > 0 && rawLogs != null && rawLogs.size() > 0) {
@@ -42,7 +40,6 @@ public class PipelineJobLog {
                         // 获取index
                         PipelineJobTaskLog currentLog = new PipelineJobTaskLog();
                         currentLog.setTaskName(task.getName());
-                        currentLog.setJobId(job.getId());
                         taskId2Log.put(taskId, currentLog);
                         jobLog.logs.add(currentLog);
                     } else if (log.contains("exited with status")) {

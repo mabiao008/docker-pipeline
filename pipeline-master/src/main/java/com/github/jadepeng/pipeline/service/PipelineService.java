@@ -1,5 +1,6 @@
 package com.github.jadepeng.pipeline.service;
 
+import java.io.File;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,6 +38,8 @@ import com.github.jadepeng.pipeline.task.AgentDiscover;
 import com.github.jadepeng.pipeline.utils.DateUtil;
 import com.github.jadepeng.pipeline.utils.StrUtil;
 import com.github.jadepeng.pipeline.utils.UUIDUtils;
+
+import lombok.SneakyThrows;
 
 
 @Service
@@ -370,13 +374,27 @@ public class PipelineService {
         this.pipelineJobRepository.save(job);
     }
 
+    @SneakyThrows
     public PipelineJobLog getJobLog(String jobId) {
         PipelineJob job = this.getJob(jobId);
         if (job.getStatus().isRunning()) {
-            return this.agentDiscover.getAgentApi(job.getAgent())
-                .getJobLog(jobId);
+            try {
+                // 优先从agent读取
+                return this.agentDiscover.getAgentApi(job.getAgent())
+                                         .getJobLog(jobId);
+            } catch (Exception e) {
+                // 从日志文件自己读取，如果挂载的同样的存储
+                File logFile = new File(job.getJobLogPath());
+                if (logFile.exists()) {
+                    return PipelineJobLog.fromLogs(
+                        FileUtils.readLines(logFile, "utf-8"),
+                        job.getTasks()
+                    );
+                }
+            }
         }
 
+        // 从db读取
         return this.readLogFromDb(jobId, job);
     }
 
