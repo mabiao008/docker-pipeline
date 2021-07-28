@@ -56,10 +56,12 @@ public class ProgramVersionServiceImpl implements ProgramVersionService {
         program.setName(programVersionDTO.getName());
         List<Tag> tags = tagMapper.toEntity(programVersionDTO.getTags());
         program.setTags(Sets.newHashSet(tags));
-        this.programRepository.save(program);
         ProgramVersion programVersion = programVersionMapper.toEntity(programVersionDTO);
         programVersion.setProgram(program);
+        programVersion.setId(UUIDUtils.getUUIDString());
         programVersion = programVersionRepository.save(programVersion);
+        program.setOnlineVersion(programVersion);
+        this.programRepository.save(program);
         return programVersionMapper.toDto(programVersion);
     }
 

@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,6 +23,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.github.jadepeng.pipeline.core.api.MasterApi;
 import com.github.jadepeng.pipeline.core.bean.Pipeline;
 import com.github.jadepeng.pipeline.core.bean.PipelineJob;
+import com.github.jadepeng.pipeline.core.bean.PipelineJobLog;
 import com.github.jadepeng.pipeline.core.bean.PipelineJobTaskLog;
 import com.github.jadepeng.pipeline.core.dto.BasePayloadResponse;
 import com.github.jadepeng.pipeline.core.dto.BaseResponse;
@@ -29,8 +31,11 @@ import com.github.jadepeng.pipeline.core.dto.JobState;
 import com.github.jadepeng.pipeline.core.dto.PageDataResponse;
 import com.github.jadepeng.pipeline.core.dto.PipelineRequest;
 import com.github.jadepeng.pipeline.service.PipelineService;
+import com.github.jadepeng.pipeline.utils.UUIDUtils;
+import com.github.jadepeng.pipeline.web.rest.vm.PipelineJson;
 import com.github.jadepeng.pipeline.web.rest.vm.SimplePipelineVM;
 
+import io.micrometer.core.annotation.Timed;
 import io.swagger.annotations.ApiOperation;
 
 @RestController
@@ -79,7 +84,6 @@ public class PipelineResource implements MasterApi {
             .success(pipelineService.createSimplePipeline(pipeline.getName(),
                                                           pipeline.getImage()));
     }
-
 
     /**
      * PUT  /pipelines : Updates an existing pipeline.
@@ -173,6 +177,20 @@ public class PipelineResource implements MasterApi {
             .success(pipelineService.getLastPipelineJob(id));
     }
 
+    @PostMapping("/exec-old")
+    @ResponseBody
+    @ApiOperation(value = "执行老pipelineJson", httpMethod = "POST",
+                  response = ResponseEntity.class)
+    public BasePayloadResponse<PipelineJob> executeOldPipeline(
+        @NotNull(message = "pipeline不能为空") @Valid @RequestBody
+            PipelineJson pipeline) throws URISyntaxException {
+        log.debug("REST request to exec old Pipeline : {}", pipeline);
+        Pipeline newPipeline = pipeline.toPipeline();
+        newPipeline.setId(UUIDUtils.getUUIDString());
+        return BasePayloadResponse
+            .success(pipelineService.runPipeline(newPipeline));
+    }
+
     @GetMapping("/exec/{id}")
     @ResponseBody
     @ApiOperation(value = "执行工作流", httpMethod = "GET")
@@ -263,5 +281,11 @@ public class PipelineResource implements MasterApi {
     public BaseResponse saveJobTaskLog(PipelineJobTaskLog log) {
         this.pipelineService.saveJobTaskLog(log);
         return BasePayloadResponse.success(log.getJobId());
+    }
+
+    @RequestMapping(value = "/jobLog/{jobId}", method = RequestMethod.GET)
+    @Timed
+    public BasePayloadResponse<PipelineJobLog> getJobLog(@PathVariable String jobId) {
+        return BasePayloadResponse.success(this.pipelineService.getJobLog(jobId));
     }
 }

@@ -39,6 +39,7 @@ public class AgentInfo implements Comparable<AgentInfo> {
 
     @Override
     public int compareTo(AgentInfo o) {
-        return this.availableTaskCount.compareTo(o.getAvailableTaskCount());
+        // desc 倒排
+        return o.getAvailableTaskCount().compareTo(this.getAvailableTaskCount());
     }
 }

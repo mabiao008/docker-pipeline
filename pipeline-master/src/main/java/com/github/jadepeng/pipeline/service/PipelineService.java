@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import com.alibaba.fastjson.JSONObject;
 import com.github.jadepeng.pipeline.core.bean.Pipeline;
 import com.github.jadepeng.pipeline.core.bean.PipelineJob;
+import com.github.jadepeng.pipeline.core.bean.PipelineJobLog;
 import com.github.jadepeng.pipeline.core.bean.PipelineJobTaskLog;
 import com.github.jadepeng.pipeline.core.dto.JobState;
 import com.github.jadepeng.pipeline.core.dto.PageDataResponse;
@@ -31,6 +32,7 @@ import com.github.jadepeng.pipeline.core.dto.RetCode;
 import com.github.jadepeng.pipeline.repository.PipelineJobRepository;
 import com.github.jadepeng.pipeline.repository.PipelineJobTaskLogRepository;
 import com.github.jadepeng.pipeline.repository.PipelineRepository;
+import com.github.jadepeng.pipeline.task.AgentDiscover;
 import com.github.jadepeng.pipeline.utils.DateUtil;
 import com.github.jadepeng.pipeline.utils.StrUtil;
 import com.github.jadepeng.pipeline.utils.UUIDUtils;
@@ -46,18 +48,21 @@ public class PipelineService {
     private final PipelineJobTaskLogRepository logRepository;
     private final MongoTemplate mongoTemplate;
     private final JobService jobService;
+    private final AgentDiscover agentDiscover;
 
     @Autowired
     public PipelineService(PipelineRepository pipelineRepository,
                            PipelineJobRepository pipelineJobRepository,
                            PipelineJobTaskLogRepository logRepository,
                            MongoTemplate mongoTemplate,
-                           JobService jobService) {
+                           JobService jobService,
+                           AgentDiscover agentDiscover) {
         this.pipelineRepository = pipelineRepository;
         this.pipelineJobRepository = pipelineJobRepository;
         this.logRepository = logRepository;
         this.mongoTemplate = mongoTemplate;
         this.jobService = jobService;
+        this.agentDiscover = agentDiscover;
     }
 
     public Pipeline createSimplePipeline(String name, String image) {
@@ -215,7 +220,6 @@ public class PipelineService {
         obj.put("year", yearObj);
 
         return obj;
-
     }
 
     /**
@@ -227,12 +231,8 @@ public class PipelineService {
     public Pipeline getPipeline(String id) {
         log.debug("Request to get Pipeline : {}", id);
         Optional<Pipeline> optional = pipelineRepository.findById(id);
-        if (!optional.isPresent()) {
-            throw new PipelineException(RetCode.INVALID_PIPLINE_ID);
-        }
-        return optional.get();
+        return optional.orElse(null);
     }
-
 
     /**
      * 复制pipeline
@@ -278,6 +278,10 @@ public class PipelineService {
             throw new PipelineException(RetCode.PIPELINE_DELETEED);
         }
 
+        return this.runPipeline(pipeline);
+    }
+
+    public PipelineJob runPipeline(Pipeline pipeline) {
         return this.jobService.runPipeline(pipeline);
     }
 
@@ -341,6 +345,10 @@ public class PipelineService {
         job.setExitedValue(state.getExitedValue());
         job.setCurrentTask(state.getCurrentTask());
 
+        if(state.getLogPath() != null) {
+            job.setJobLogPath(state.getLogPath());
+        }
+
         this.pipelineJobRepository.save(job);
     }
 
@@ -356,5 +364,30 @@ public class PipelineService {
 
     public PipelineJob getPipelineJob(String jobId) {
         return this.pipelineJobRepository.findById(jobId).orElse(null);
+    }
+
+    public void savePipelineJob(PipelineJob job) {
+        this.pipelineJobRepository.save(job);
+    }
+
+    public PipelineJobLog getJobLog(String jobId) {
+        PipelineJob job = this.getJob(jobId);
+        if (job.getStatus().isRunning()) {
+            return this.agentDiscover.getAgentApi(job.getAgent())
+                .getJobLog(jobId);
+        }
+
+        return this.readLogFromDb(jobId, job);
+    }
+
+    private PipelineJobLog readLogFromDb(String jobId, PipelineJob job) {
+        List<PipelineJobTaskLog> logs = logRepository.findAllByJobId(jobId);
+        PipelineJobLog log = new PipelineJobLog();
+        log.setExitedValue(job.getExitedValue());
+        log.setLogs(logs);
+        log.setPipelineJobFt(job.getFinishTime());
+        log.setPipelineJobSt(job.getStartTime());
+        log.setStatus(job.getStatus());
+        return log;
     }
 }

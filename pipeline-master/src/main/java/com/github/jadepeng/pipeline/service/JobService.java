@@ -39,6 +39,8 @@ public class JobService {
       .id(UUID.randomUUID().toString())
       .startTime(System.currentTimeMillis())
       .tasks(pipeline.getPipelineTasks())
+      .volumes(pipeline.getVolumes())
+      .networks(pipeline.getNetworks())
       .status(Status.QUEUE)
       .build();
 

@@ -8,6 +8,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import com.google.common.collect.Lists;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -48,6 +50,13 @@ public class PipelineJob {
     private int exitedValue;
 
     private String remark;
+
+    private String jobLogPath;
+
+    private List<Pipeline.Network> networks = Lists
+        .newArrayList(new Pipeline.Network());
+
+    private List<Pipeline.Volume> volumes = Lists.newArrayList(new Pipeline.Volume());
 
     /**
      * 工作空间地址

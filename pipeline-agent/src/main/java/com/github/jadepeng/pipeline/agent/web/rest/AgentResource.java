@@ -4,6 +4,7 @@ import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,6 +17,7 @@ import com.github.jadepeng.pipeline.core.api.AgentApi;
 import com.github.jadepeng.pipeline.core.bean.AgentInfo;
 import com.github.jadepeng.pipeline.core.bean.OperationalSystemInfo;
 import com.github.jadepeng.pipeline.core.bean.PipelineJob;
+import com.github.jadepeng.pipeline.core.bean.PipelineJobLog;
 import com.github.jadepeng.pipeline.core.dto.BasePayloadResponse;
 import com.github.jadepeng.pipeline.core.dto.BaseResponse;
 import com.github.jadepeng.pipeline.core.dto.ExecutePipelineRequest;
@@ -41,6 +43,13 @@ public class AgentResource implements AgentApi {
     @Timed
     public OperationalSystemInfo os() {
         return OperationalSystem.info();
+    }
+
+    @RequestMapping(value = "/api/joblog/{jobId}", method = RequestMethod.GET)
+    @Override
+    @Timed
+    public PipelineJobLog getJobLog(@PathVariable(value = "jobId") String jobId) {
+        return jobRunner.getJobLog(jobId);
     }
 
     @RequestMapping(value = "/api/runJob", method = RequestMethod.POST)

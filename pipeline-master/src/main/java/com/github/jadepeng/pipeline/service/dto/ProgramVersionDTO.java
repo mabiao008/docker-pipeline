@@ -7,6 +7,12 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.List;
 
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Field;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.github.jadepeng.pipeline.domain.Program;
+
 /**
  * A DTO for the {@link com.github.jadepeng.pipeline.domain.ProgramVersion} entity.
  */
@@ -66,6 +72,8 @@ public class ProgramVersionDTO implements Serializable {
     private DockerImageDTO dockerImage;
 
     private List<TagDTO> tags;
+
+    private ProgramDTO program;
 
     public String getId() {
         return id;
@@ -154,6 +162,14 @@ public class ProgramVersionDTO implements Serializable {
     public void setTags(
         List<TagDTO> tags) {
         this.tags = tags;
+    }
+
+    public ProgramDTO getProgram() {
+        return program;
+    }
+
+    public void setProgram(ProgramDTO program) {
+        this.program = program;
     }
 
     @Override

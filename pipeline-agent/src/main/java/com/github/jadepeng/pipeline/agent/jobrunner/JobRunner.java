@@ -1,5 +1,6 @@
 package com.github.jadepeng.pipeline.agent.jobrunner;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
@@ -7,12 +8,16 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.io.FileUtils;
 import org.springframework.stereotype.Component;
 
 import com.github.jadepeng.pipeline.agent.config.ApplicationProperties;
 import com.github.jadepeng.pipeline.agent.core.AgentContext;
 import com.github.jadepeng.pipeline.agent.jobrunner.docker.DockerEngine;
 import com.github.jadepeng.pipeline.core.api.MasterApi;
+import com.github.jadepeng.pipeline.core.bean.Pipeline;
+import com.github.jadepeng.pipeline.core.bean.PipelineJob;
+import com.github.jadepeng.pipeline.core.bean.PipelineJobLog;
 import com.github.jadepeng.pipeline.core.bean.PipelineJobTaskLog;
 import com.github.jadepeng.pipeline.core.bean.Status;
 import com.github.jadepeng.pipeline.core.dto.ExecutePipelineRequest;
@@ -50,6 +55,18 @@ public class JobRunner {
     }
 
     @SneakyThrows
+    public PipelineJobLog getJobLog(String jobId) {
+        if (jobContexts.containsKey(jobId)) {
+            File logFile = jobContexts.get(jobId).getLogFile();
+            Pipeline job = jobContexts.get(jobId).getPipeline();
+            return PipelineJobLog.fromLogs(job,
+                                           FileUtils.readLines(logFile,"utf-8"),
+                                           job.getPipelineTasks());
+        }
+        return null;
+    }
+
+    @SneakyThrows
     public void runJob(ExecutePipelineRequest request) {
         this.agentContext.incrementRunTaskCount();
 
@@ -64,10 +81,12 @@ public class JobRunner {
         JobContext context = new JobContext();
         context.setRunner(engine);
         context.setWorkingThread(workThread);
+        context.setLogFile(engine.getJobLogPath());
+        context.setPipeline(request.getPipeline());
 
         this.jobContexts.put(request.getPipelineJobId(), context);
 
-        this.jobStarted(request.getPipelineJobId());
+        this.jobStarted(request.getPipelineJobId(), engine.getJobLogPath().getAbsolutePath());
     }
 
     public void stopJob(String jobId) {
@@ -119,10 +138,11 @@ public class JobRunner {
         this.masterApi.jobStateChange(state);
     }
 
-    private void jobStarted(String jobId) {
+    private void jobStarted(String jobId, String logPath) {
         JobState state = JobState.builder().status(Status.RUNNING)
                                  .exitedValue(0)
                                  .jobId(jobId)
+                                 .logPath(logPath)
                                  .timestamp(System.currentTimeMillis())
                                  .build();
         this.masterApi.jobStateChange(state);
@@ -132,7 +152,8 @@ public class JobRunner {
     private static class JobContext {
         private DockerRunnerEngine runner;
         private Thread workingThread;
-        private String logPath;
+        private File logFile;
+        private Pipeline pipeline;
 
         public void clean() {
             try {

@@ -20,4 +20,5 @@ public class JobState {
     private String currentTask;
     private int exitedValue;
     private long timestamp;
+    private String logPath;
 }

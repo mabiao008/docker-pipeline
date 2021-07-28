@@ -71,7 +71,6 @@ public class Pipeline extends AbstractAuditingEntity implements Serializable {
         this.pipelineTasks.add(task);
     }
 
-
     /**
      * 递归跳过节点
      *

@@ -67,6 +67,26 @@
                         v-bkloading="{ isLoading: isContentLoading, opacity: .2 }" />
                 </div>
             </jb-form-item>
+            <jb-form-item :label="$t('script.运行镜像.label')" required property="dockerImage">
+                 <pipeline-docker-select
+                    :placeholder="$t('script.标签对资源的分类管理有很大帮助')"
+                    class="input"
+                    v-model="formData.dockerImage" />
+            </jb-form-item>
+            <jb-form-item :label="$t('script.启动命令.label')" required property="command">
+                <jb-input
+                    class="input"
+                    v-model="formData.command"
+                    :placeholder="$t('script.输入启动命令')"
+                    :maxlength="30" />
+            </jb-form-item>
+            <jb-form-item :label="$t('script.自定义参数.label')" required property="arguments">
+                <jb-input
+                    class="input"
+                    v-model="formData.arguments"
+                    :placeholder="$t('script.自定义参数')"
+                    :maxlength="30" />
+            </jb-form-item>
         </jb-form>
         <template #action>
             <bk-button class="w120 mr10" :loading="isSbumiting" theme="primary" @click="handleSubmit">{{ $t('script.提交') }}</bk-button>
@@ -91,13 +111,14 @@
     import JbInput from '@components/jb-input';
     import AceEditor from '@components/ace-editor';
     import JbTagSelect from '@components/jb-tag-select';
-
+    import PipelineDockerSelect from '@components/pipeline-docker-select';
     export default {
         name: '',
         components: {
             AceEditor,
             JbTagSelect,
             JbInput,
+            PipelineDockerSelect,
         },
         data () {
             return {
@@ -108,6 +129,9 @@
                 formData: {
                     name: '',
                     tags: [],
+                    command: '',
+                    arguments: '',
+                    dockerImage: {},
                     description: '',
                     version: '',
                     type: 1,

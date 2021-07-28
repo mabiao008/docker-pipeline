@@ -82,9 +82,13 @@ public class PipelineScheduler {
         }
     }
 
-
     public void cancelJob(String jobId) {
-
+        PipelineJob job = this.pipelineService.getPipelineJob(jobId);
+        if (job == null) {
+            return;
+        }
+        AgentApi api = this.agentDiscover.getAgentApi(job.getAgent());
+        api.stopJob(PipelineJob.builder().id(jobId).build());
     }
 
     public void scheduleJob(String jobId) {
@@ -96,7 +100,6 @@ public class PipelineScheduler {
     @SneakyThrows
     private void doScheduleJob(String jobId) {
         // 挑选 agent
-
         List<AgentInfo> agents =
             Lists.newArrayList(
                 this.agentDiscover.getAliveAgentInfo().iterator());
@@ -104,7 +107,7 @@ public class PipelineScheduler {
         if (agents.size() == 0) {
             log.info("there is no alived agent, waiting 5s");
             Thread.sleep(5000);
-            doScheduleJob(jobId);
+            this.doScheduleJob(jobId);
             return;
         }
 
@@ -131,10 +134,39 @@ public class PipelineScheduler {
         Pipeline pipeline =
             this.pipelineService.getPipeline(job.getPipelineId());
 
+        if (pipeline == null) {
+            // 执行老pipeline
+            pipeline = this.buildPipelineFromJob(job);
+        }
+
+        this.executeJob(jobId, agent, pipeline);
+
+        // 更新
+        this.updateJobStatus(agent, job);
+    }
+
+    private void updateJobStatus(AgentInfo agent, PipelineJob job) {
+        job.setStatus(Status.RUNNING);
+        job.setAgent(agent.getAgentUrl());
+        this.pipelineService.savePipelineJob(job);
+    }
+
+    private void executeJob(String jobId, AgentInfo agent, Pipeline pipeline) {
         AgentApi api = this.agentDiscover.getAgentApi(agent.getAgentUrl());
         api.runJob(ExecutePipelineRequest.builder()
                                          .pipelineJobId(jobId)
                                          .pipeline(pipeline).build());
+    }
+
+    private Pipeline buildPipelineFromJob(PipelineJob job) {
+        Pipeline pipeline;
+        pipeline = new Pipeline();
+        pipeline.setId(job.getId());
+        pipeline.setName(job.getPipelineName());
+        pipeline.setNetworks(job.getNetworks());
+        pipeline.setVolumes(job.getVolumes());
+        pipeline.setPipelineTasks(job.getTasks());
+        return pipeline;
     }
 
 }

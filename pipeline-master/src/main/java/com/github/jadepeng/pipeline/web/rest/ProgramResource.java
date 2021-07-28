@@ -2,7 +2,9 @@ package com.github.jadepeng.pipeline.web.rest;
 
 import com.github.jadepeng.pipeline.repository.ProgramRepository;
 import com.github.jadepeng.pipeline.service.ProgramService;
+import com.github.jadepeng.pipeline.service.ProgramVersionService;
 import com.github.jadepeng.pipeline.service.dto.ProgramDTO;
+import com.github.jadepeng.pipeline.service.dto.ProgramVersionDTO;
 import com.github.jadepeng.pipeline.web.rest.errors.BadRequestAlertException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -15,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -40,10 +41,14 @@ public class ProgramResource {
     private final ProgramService programService;
 
     private final ProgramRepository programRepository;
+    private final ProgramVersionService programVersionService;
 
-    public ProgramResource(ProgramService programService, ProgramRepository programRepository) {
+    public ProgramResource(ProgramService programService,
+                           ProgramRepository programRepository,
+                           ProgramVersionService programVersionService) {
         this.programService = programService;
         this.programRepository = programRepository;
+        this.programVersionService = programVersionService;
     }
 
     /**
@@ -54,16 +59,18 @@ public class ProgramResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/programs")
-    public ResponseEntity<ProgramDTO> createProgram(@RequestBody ProgramDTO programDTO) throws URISyntaxException {
+    public ResponseEntity<ProgramDTO>
+        createProgram(@RequestBody ProgramVersionDTO programDTO)
+        throws URISyntaxException {
         log.debug("REST request to save Program : {}", programDTO);
         if (programDTO.getId() != null) {
             throw new BadRequestAlertException("A new program cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProgramDTO result = programService.save(programDTO);
+        ProgramVersionDTO result = programVersionService.save(programDTO);
         return ResponseEntity
             .created(new URI("/api/programs/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId()))
-            .body(result);
+            .body(result.getProgram());
     }
 
     /**

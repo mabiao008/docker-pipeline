@@ -5,5 +5,9 @@ package com.github.jadepeng.pipeline.core.bean;
  */
 public enum Status {
     AVAIABLE, DISABLE, QUEUE, APPROVED, REJECTED, RUNNING, FINISHING, FINISHED,
-    SUCCESS, FAIL
+    SUCCESS, FAIL;
+
+    public boolean isRunning() {
+        return this == Status.RUNNING;
+    }
 }

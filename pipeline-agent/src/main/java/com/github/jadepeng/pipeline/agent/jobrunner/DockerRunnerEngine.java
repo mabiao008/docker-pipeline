@@ -132,10 +132,8 @@ public class DockerRunnerEngine implements RunnerRunEngine {
         for (Pipeline.Step step : task.getSteps()) {
             try {
                 this.fileLogger.appendLog("proc \"" + step.getName() + "\" started");
-
                 // 启动容器
                 this.startContainer(step);
-
 
                 // 执行
                 int exitCode = this.dockerEngine
@@ -174,21 +172,28 @@ public class DockerRunnerEngine implements RunnerRunEngine {
         return log;
     }
 
-    private File getJobLogPath() {
-        File file =  Paths.get(this.config.getPipelineLogPath(),
+    File logFile;
+
+    public File getJobLogPath() {
+        if (logFile != null) {
+            return logFile;
+        }
+
+        logFile =  Paths.get(this.config.getPipelineLogPath(),
                              this.getDateStr(),
                          this.jobId).toFile();
 
-        if (!file.exists()) {
+        if (!logFile.exists()) {
             try {
-                FileUtils.forceMkdir(file);
+                FileUtils.forceMkdir(logFile);
             } catch (IOException e) {
             }
         }
 
-        return Paths.get(this.config.getPipelineLogPath(),
+        logFile =  Paths.get(this.config.getPipelineLogPath(),
                          this.getDateStr(),
                          this.jobId, "job.log").toFile();
+        return logFile;
     }
 
     private String getDateStr() {
@@ -200,9 +205,7 @@ public class DockerRunnerEngine implements RunnerRunEngine {
     }
 
     private void startContainer(Pipeline.Step step) {
-
         //this.pullImage(step);
-
         this.currentContainerId = this.dockerEngine.startContainer(
             step.getImage(),
             this.getContainerName(step),
