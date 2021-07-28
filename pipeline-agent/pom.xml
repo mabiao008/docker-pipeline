@@ -27,6 +27,7 @@
     <!-- jhipster-needle-distribution-management -->
 
     <properties>
+        <start-class>com.github.jadepeng.pipeline.agent.AgentApp</start-class>
         <spring-cloud-netflix.version>2.2.9.RELEASE</spring-cloud-netflix.version>
     </properties>
 

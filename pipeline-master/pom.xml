@@ -16,6 +16,11 @@
     <packaging>jar</packaging>
     <name>Pipeline master</name>
 
+    <properties>
+        <start-class>com.github.jadepeng.pipeline.PipelineMasterApp</start-class>
+        <spring-cloud-netflix.version>2.2.9.RELEASE</spring-cloud-netflix.version>
+    </properties>
+
     <repositories>
         <!-- jhipster-needle-maven-repository -->
     </repositories>
